@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 import os
+import pandas as pd
 
 st.set_page_config(layout="wide", page_title="Gemini chatbot app")
 st.title("Gemini chatbot app")
@@ -8,6 +9,13 @@ st.title("Gemini chatbot app")
 # api_key, base_url = os.environ["API_KEY"], os.environ["BASE_URL"]
 api_key, base_url = st.secrets["API_KEY"], st.secrets["BASE_URL"]
 selected_model = "gemini-2.5-flash"
+
+uploaded_files = st.file_uploader(
+    "Upload data", accept_multiple_files=True, type="csv"
+)
+for uploaded_file in uploaded_files:
+    df = pd.read_csv(uploaded_file)
+    st.write(df)
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?."}]
