@@ -1,7 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 import os
-import pandas as pd
+import fitz
 
 st.set_page_config(layout="wide", page_title="Gemini chatbot app")
 st.title("Gemini chatbot app")
@@ -10,12 +10,20 @@ st.title("Gemini chatbot app")
 api_key, base_url = st.secrets["API_KEY"], st.secrets["BASE_URL"]
 selected_model = "gemini-2.5-flash"
 
-uploaded_files = st.file_uploader(
-    "Upload data", accept_multiple_files=True, type="csv"
-)
-for uploaded_file in uploaded_files:
-    df = pd.read_csv(uploaded_file)
-    st.write(df)
+def load_pdf(file_path):
+    doc = fitz.open(file_path)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    doc.close()
+    return text
+def load_documents_from_folder(folder_path):
+    documents = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".pdf"):
+            text = load_pdf(os.path.join(folder_path, filename))
+            documents.append({"filename:" filename, "text:" text})
+    return documents
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?."}]
