@@ -14,24 +14,26 @@ class FAISSIndex:
             results.append(self.metadata[idx])
         return results
 
-embed_model_id = ... # nazwa modelu
+embed_model_id = "intfloat/e5-small-v2" # nazwa modelu
 model_kwargs = {"device": "cpu", "trust_remote_code": True}
 
 def create_index(documents):
-    embeddings = ... # załadowanie modelu embeddingowego
-    texts = ... # wartości tekstowe wszystkich dokumentów
-    metadata = ... # metadane wszystkich dokumentów, czyli słownik {filename:... , text:...}
+    embeddings = HuggingFaceEmbeddings(model_name=embed_model_id, model_kwargs=model_kwargs) # załadowanie modelu embeddingowego
+    texts = [doc["text"] for doc in documents] # wartości tekstowe wszystkich dokumentów
+    metadata = [{} for doc in documents] # metadane wszystkich dokumentów, czyli słownik {filename:... , text:...}
 
     embeddings_matrix = [embeddings.embed_query(text) for text in texts]
     embeddings_matrix = np.array(embeddings_matrix).astype("float32")
 
-    index = faiss....# ustawienie indeksu przeszukwania
+    index = faiss.IndexFlatL2(embeddings_matrix.shape[1] # ustawienie indeksu przeszukwania
     index.add(embeddings_matrix)
 
     return FAISSIndex(index, metadata)
 
+# def 
+
 def retrieve_docs(query, faiss_index, k=3):
-    embeddings = ... # załadowanie modelu embeddingowego
-    query_embedding = ... # embeddowanie zapytania (query)
-    results = ... # zwrócenie wyników przeuszkiwania
+    embeddings = HuggingFaceEmbeddings(model_name=embed_model_id, model_kwargs=model_kwargs) # załadowanie modelu embeddingowego
+    query_embedding = np.array([embeddings.embed_query(query)]).astype("float32") # embeddowanie zapytania (query)
+    results = faiss_index.similarity_search(query_embedding, k) # zwrócenie wyników przeuszkiwania
     return results
