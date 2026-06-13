@@ -19,8 +19,8 @@ Context: {context}
 Answer:
 """
 
-selected_model = ... # nazwa modelu
-model = ... # obiekt wrappera modelu
+selected_model = "gemini-2.5-flash" # nazwa modelu
+model = CustomModelChat() # obiekt wrappera modelu
 
 def answer_question(question, documents, model):
     context = "\n\n".join([doc["text"] for doc in documents])
@@ -60,8 +60,8 @@ if uploaded_files:
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
     st.write("Pliki załadowane")
-    documents = ... # załadowanie dokumentów
-    st.session_state.faiss_index = ... # dodanie stanu bazy do sesji
+    documents = load_documents_from_folder(UPLOAD_FOLDER) # załadowanie dokumentów
+    st.session_state.faiss_index = create_index(documents) # dodanie stanu bazy do sesji
     st.write("Pliki przeliczone")
     st.session_state.retrieve_files = True
 
@@ -77,9 +77,9 @@ if question := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": question})
     st.chat_message("user").write(question)
     if st.session_state.retrieve_files:
-        related_documents = ... # wyszukanie najbardziej pasujących do query dokumentów
-        answer = ... # wywołanie odpowiedzi na pytanie z dodanymi do kontekstu dokumentami
+        related_documents = retrieve_docs(question, st.session_state.faiss_index) # wyszukanie najbardziej pasujących do query dokumentów
+        answer = answer_question(question, related_documents, model) # wywołanie odpowiedzi na pytanie z dodanymi do kontekstu dokumentami
     else:
-        answer = ...
+        answer = model.invoke(question)
     st.session_state.messages.append({"role": "assistant", "content": answer.content})
     st.chat_message("assistant").write(answer.content)
