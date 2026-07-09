@@ -37,26 +37,39 @@ if prompt := st.chat_input():
     st.chat_message("assistant").write(msg)
 
 uploaded_image = st.file_uploader(
-    "Dodaj zdjęcie produktu",
-    type=["jpg", "jpeg", "png"]
+    "Dodaj zdjęcie jedzenia",
+    type=["jpg", "jpeg", "png"],
+    key="food_image"
 )
-
 if uploaded_image:
-
-    if "food_name" not in st.session_state:
-
-        st.session_state.food_name = detect_food(
-            uploaded_image
+    st.image(
+        uploaded_image,
+        width=300
+    )
+    result = detect_food(uploaded_image)
+    food_name = result["food"]
+    confidence = result["confidence"]
+    st.success(
+        f"Rozpoznano: {food_name}"
+    )
+    st.write(
+        f"Pewność: {confidence:.2f}"
+    )
+    context = retrieve_food_context(
+        food_name
+    )
+    if context:
+        answer = analyze_nutrition(
+            context,
+            model
         )
-
-    food_name = st.session_state.food_name
-
-    st.write("Rozpoznano:", food_name)
-
-    context = retrieve_food_context(food_name)
-
-    if context is None:
-        st.error("Nie znaleziono produktu.")
+        st.subheader(
+            "Analiza wartości odżywczych"
+        )
+        st.write(
+            answer.content
+        )
     else:
-        response = analyze_nutrition(context, model)
-        st.write(response.content)
+        st.warning(
+            "Nie znaleziono produktu w bazie."
+        )
