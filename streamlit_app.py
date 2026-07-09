@@ -6,6 +6,7 @@ from food_detector import detect_food
 from nutrition_rag import retrieve_food_context
 from nutrition_analyzer import analyze_nutrition
 from custom_model_chat import get_model
+from openai import RateLimitError
 
 model = get_model()
 
@@ -80,3 +81,19 @@ if uploaded_image:
         st.warning(
             "Nie znaleziono produktu w bazie."
         )
+try:
+
+    answer = analyze_nutrition(
+        context,
+        model
+    )
+
+    st.write(answer.content)
+
+
+except RateLimitError:
+
+    st.error(
+        "Przekroczono limit Gemini API. "
+        "Spróbuj później lub zmień model."
+    )
