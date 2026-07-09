@@ -35,4 +35,21 @@ df.to_sql(
     if_exists="replace",
     index=False
 )
+cursor = conn.cursor()
+
+cursor.execute(
+    "SELECT COUNT(*) FROM foods"
+)
+
+print(
+    cursor.fetchone()
+)
+
+cursor.execute(
+    "SELECT * FROM foods LIMIT 3"
+)
+
+print(
+    cursor.fetchall()
+)
 conn.close()
