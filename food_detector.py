@@ -1,10 +1,8 @@
-from transformers import (
-    CLIPProcessor,
-    CLIPModel
-)
+from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
 import torch
 import streamlit as st
+
 MODEL_NAME = "openai/clip-vit-base-patch32"
 @st.cache_resource
 def load_clip():
@@ -39,8 +37,8 @@ def detect_food(image_file):
         image_file
     )
     labels = [
-        f"a photo of {x}"
-        for x in FOOD_CLASSES
+        f"a photo of {food}"
+        for food in FOOD_CLASSES
     ]
     inputs = processor(
         text=labels,
@@ -53,11 +51,13 @@ def detect_food(image_file):
         output = model(
             **inputs
         )
-    probs = output.logits_per_image.softmax(
-        dim=1
+    probabilities = (
+        output
+        .logits_per_image
+        .softmax(dim=1)
     )
-    index = probs.argmax().item()
+    index = probabilities.argmax().item()
     return {
         "food": FOOD_CLASSES[index],
-        "confidence": probs[0][index].item()
+        "confidence": probabilities[0][index].item()
     }
