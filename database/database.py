@@ -1,16 +1,18 @@
 import sqlite3
-import os
+
 DATABASE = "database/foods.db"
 def search_food(name):
-    name = name.lower().strip()
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(
+        DATABASE
+    )
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute(
         """
         SELECT *
         FROM foods
-        WHERE LOWER(name) LIKE ?
+        WHERE LOWER(name)
+        LIKE LOWER(?)
         LIMIT 1
         """,
         (
@@ -19,4 +21,6 @@ def search_food(name):
     )
     row = cursor.fetchone()
     conn.close()
-    return dict(row) if row else None
+    if row:
+        return dict(row)
+    return None
