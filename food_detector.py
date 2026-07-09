@@ -8,7 +8,7 @@ client = OpenAI(
 MODEL = "gemini-2.5-flash"
 
 def detect_food(image_file):
-    image_bytes = image_file.read()
+    image_bytes = image_file.getvalue()
     image_base64 = base64.b64encode(image_bytes).decode("utf-8")
     response = client.chat.completions.create(
         model=MODEL,
