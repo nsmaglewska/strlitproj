@@ -67,6 +67,7 @@ if uploaded_image:
         food_name
     )
     if context:
+        try:
         answer = analyze_nutrition(
             context,
             model
@@ -77,23 +78,12 @@ if uploaded_image:
         st.write(
             answer.content
         )
+    except RateLimitError:
+        st.error(
+            "Przekroczono limit Gemini API. "
+            "Spróbuj później lub zmień model."
+        )
     else:
         st.warning(
             "Nie znaleziono produktu w bazie."
         )
-try:
-
-    answer = analyze_nutrition(
-        context,
-        model
-    )
-
-    st.write(answer.content)
-
-
-except RateLimitError:
-
-    st.error(
-        "Przekroczono limit Gemini API. "
-        "Spróbuj później lub zmień model."
-    )
