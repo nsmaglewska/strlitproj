@@ -38,5 +38,4 @@ def detect_food(image_file):
             }
         ]
     )
-
     return response.choices[0].message.content.strip()
