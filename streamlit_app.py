@@ -2,6 +2,7 @@ import streamlit as st
 from openai import OpenAI
 import os
 import fitz
+from food_detector import detect_food
 
 # a
 
@@ -32,3 +33,15 @@ if prompt := st.chat_input():
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant").write(msg)
+
+uploaded_image = st.file_uploader(
+    "Dodaj zdjęcie produktu",
+    type=["jpg", "jpeg", "png"]
+)
+if uploaded_image:
+
+    st.image(uploaded_image)
+
+    food_name = detect_food(uploaded_image)
+
+    st.write("Rozpoznano:", food_name)
