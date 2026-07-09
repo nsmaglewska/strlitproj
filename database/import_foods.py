@@ -1,49 +1,23 @@
-import sqlite3
-import pandas as pd
+import requests
 
-df = pd.read_csv(
-    "en.openfoodfacts.org.products.csv",
-    sep="\t",
-    low_memory=False
-)
+def get_food_data(product_name):
+    url = "https://world.openfoodfacts.org/cgi/search.pl"
 
-columns = [
-    "product_name",
-    "brands",
-    "energy-kcal_100g",
-    "proteins_100g",
-    "fat_100g",
-    "carbohydrates_100g",
-    "sugars_100g",
-    "fiber_100g",
-    "salt_100g"
-]
+    params = {
+        "search_terms": product_name,
+        "search_simple": 1,
+        "action": "process",
+        "json": 1
+    }
 
-df = df[columns]
+    response = requests.get(url, params=params)
 
-df.columns = [
-    "product_name",
-    "brands",
-    "calories",
-    "protein",
-    "fat",
-    "carbohydrates",
-    "sugars",
-    "fiber",
-    "salt"
-]
+    if response.status_code != 200:
+        return None
 
-df = df.dropna(subset=["product_name"])
+    data = response.json()
 
-conn = sqlite3.connect("foods.db")
+    if len(data["products"]) == 0:
+        return None
 
-df.to_sql(
-    "foods",
-    conn,
-    if_exists="append",
-    index=False
-)
-
-conn.close()
-
-print("Import zakończony.")
+    return data["products"][0]
