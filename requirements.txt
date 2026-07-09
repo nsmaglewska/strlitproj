@@ -13,3 +13,7 @@ sentence-transformers
 streamlit
 tiktoken
 watchdog
+torch
+torchvision
+transformers
+pillow
