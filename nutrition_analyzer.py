@@ -1,23 +1,26 @@
 from langchain_core.prompts import ChatPromptTemplate
 
-template = """
+PROMPT = """
 Jesteś dietetykiem.
+
 Przeanalizuj produkt:
+
 {context}
+
 Podaj:
-- ocenę zdrowotności 1-10
-- zalety
-- wady
-- dla kogo produkt jest dobry
-- czy pasuje do redukcji
-- krótkie zalecenie
+
+1. Ocena zdrowotności 1-10
+2. Najważniejsze zalety
+3. Możliwe wady
+4. Czy produkt pasuje do zdrowej diety
+5. Krótkie zalecenie
 """
 def analyze_nutrition(
         context,
         model
 ):
     prompt = ChatPromptTemplate.from_template(
-        template
+        PROMPT
     )
     chain = prompt | model
     return chain.invoke(
