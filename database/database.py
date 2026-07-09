@@ -1,9 +1,7 @@
 import sqlite3
-
+import os
 DATABASE = "database/foods.db"
-
-def search_food(name):
-
+def search_food(food_name):
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -14,9 +12,7 @@ def search_food(name):
         WHERE LOWER(name) LIKE LOWER(?)
         LIMIT 1
         """,
-        (
-            f"%{name}%",
-        )
+        (f"%{food_name}%",)
     )
     row = cursor.fetchone()
     conn.close()
