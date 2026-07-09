@@ -38,10 +38,14 @@ uploaded_image = st.file_uploader(
     "Dodaj zdjęcie produktu",
     type=["jpg", "jpeg", "png"]
 )
-if uploaded_image:
+food_name = detect_food(uploaded_image)
 
-    st.image(uploaded_image)
+context = retrieve_food_context(food_name)
 
-    food_name = detect_food(uploaded_image)
+answer = answer_question(
+    question="Oceń wartości odżywcze tego produktu.",
+    context=context,
+    model=model
+)
 
-    st.write("Rozpoznano:", food_name)
+st.write(answer.content)
