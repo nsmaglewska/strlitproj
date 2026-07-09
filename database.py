@@ -1,24 +1,24 @@
 import sqlite3
 
-DB_PATH = "foods.db"
+DATABASE = "foods.db"
+
 
 def get_connection():
-    return sqlite3.connect(DB_PATH)
+    return sqlite3.connect(DATABASE)
 
 
 def search_food(name):
     conn = get_connection()
-
     cursor = conn.cursor()
 
     cursor.execute("""
         SELECT *
         FROM foods
-        WHERE name LIKE ?
+        WHERE LOWER(name) LIKE LOWER(?)
     """, (f"%{name}%",))
 
-    rows = cursor.fetchall()
+    result = cursor.fetchone()
 
     conn.close()
 
-    return rows
+    return result
