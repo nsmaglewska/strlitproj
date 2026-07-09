@@ -78,7 +78,7 @@ if uploaded_image:
             st.write(
                 answer.content
             )
-            except RateLimitError:
+        except RateLimitError:
             st.error(
                 "Przekroczono limit Gemini API. "
                 "Spróbuj później lub zmień model."
