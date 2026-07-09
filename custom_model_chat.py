@@ -15,3 +15,4 @@ class CustomChatModel(ChatOpenAI):
     def __init__(self, openai_api_key: Optional[str] = None, **kwargs):
         openai_api_key = openai_api_key or st.secrets["API_KEY"]
         super().__init__(base_url=st.secrets["BASE_URL"], openai_api_key=openai_api_key, **kwargs)
+    model = CustomChatModel(model="gemini-2.5-flash")
