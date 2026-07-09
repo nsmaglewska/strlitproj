@@ -40,10 +40,6 @@ uploaded_image = st.file_uploader(
     "Dodaj zdjęcie produktu",
     type=["jpg", "jpeg", "png"]
 )
-uploaded_image = st.file_uploader(
-    "Dodaj zdjęcie produktu",
-    type=["jpg", "jpeg", "png"]
-)
 
 if uploaded_image is not None:
 
