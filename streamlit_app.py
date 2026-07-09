@@ -5,7 +5,9 @@ import fitz
 from food_detector import detect_food
 from nutrition_rag import retrieve_food_context
 from nutrition_analyzer import analyze_nutrition
-from custom_model_chat import model
+from custom_model_chat import get_model
+
+model = get_model()
 
 # a
 
