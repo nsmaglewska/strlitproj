@@ -27,7 +27,7 @@ df.columns = [
 "fiber"
 ]
 conn = sqlite3.connect(
-    "foods.db"
+    "database/foods.db"
 )
 df.to_sql(
     "foods",
