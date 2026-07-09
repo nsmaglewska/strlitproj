@@ -1,29 +1,29 @@
-from transformers import CLIPProcessor, CLIPModel
+from transformers import (
+    CLIPProcessor,
+    CLIPModel
+)
 from PIL import Image
 import torch
-
-
+import streamlit as st
 MODEL_NAME = "openai/clip-vit-base-patch32"
-
-
-model = CLIPModel.from_pretrained(
-    MODEL_NAME
-)
-
-processor = CLIPProcessor.from_pretrained(
-    MODEL_NAME
-)
-
-
-# Lista produktów, które chcemy rozpoznawać
+@st.cache_resource
+def load_clip():
+    model = CLIPModel.from_pretrained(
+        MODEL_NAME
+    )
+    processor = CLIPProcessor.from_pretrained(
+        MODEL_NAME
+    )
+    return model, processor
+model, processor = load_clip()
 FOOD_CLASSES = [
-    "apple",
     "banana",
+    "apple",
     "orange",
     "pizza",
     "hamburger",
-    "pasta",
     "rice",
+    "pasta",
     "chicken",
     "fish",
     "egg",
@@ -33,47 +33,31 @@ FOOD_CLASSES = [
     "tomato",
     "potato"
 ]
-
-
 def detect_food(image_file):
 
-    image = Image.open(image_file)
-
-    texts = [
-        f"a photo of {food}"
-        for food in FOOD_CLASSES
+    image = Image.open(
+        image_file
+    )
+    labels = [
+        f"a photo of {x}"
+        for x in FOOD_CLASSES
     ]
-
-
     inputs = processor(
-        text=texts,
+        text=labels,
         images=image,
         return_tensors="pt",
         padding=True
     )
-
-
     with torch.no_grad():
 
-        outputs = model(**inputs)
-
-
-    logits = outputs.logits_per_image
-
-    probabilities = logits.softmax(
+        output = model(
+            **inputs
+        )
+    probs = output.logits_per_image.softmax(
         dim=1
     )
-
-
-    best_index = probabilities.argmax().item()
-
-
-    food = FOOD_CLASSES[best_index]
-
-    confidence = probabilities[0][best_index].item()
-
-
+    index = probs.argmax().item()
     return {
-        "food": food,
-        "confidence": confidence
+        "food": FOOD_CLASSES[index],
+        "confidence": probs[0][index].item()
     }
