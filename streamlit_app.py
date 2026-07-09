@@ -41,9 +41,15 @@ uploaded_image = st.file_uploader(
     type=["jpg", "jpeg", "png"]
 )
 
-if uploaded_image is not None:
+if uploaded_image:
 
-    food_name = detect_food(uploaded_image)
+    if "food_name" not in st.session_state:
+
+        st.session_state.food_name = detect_food(
+            uploaded_image
+        )
+
+    food_name = st.session_state.food_name
 
     st.write("Rozpoznano:", food_name)
 
