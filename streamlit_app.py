@@ -40,12 +40,21 @@ uploaded_image = st.file_uploader(
     "Dodaj zdjęcie produktu",
     type=["jpg", "jpeg", "png"]
 )
-food_name = detect_food(uploaded_image)
+uploaded_image = st.file_uploader(
+    "Dodaj zdjęcie produktu",
+    type=["jpg", "jpeg", "png"]
+)
 
-context = retrieve_food_context(food_name)
+if uploaded_image is not None:
 
-if context is None:
-    st.error("Nie znaleziono produktu.")
-else:
-    response = analyze_nutrition(context, model)
-    st.write(response.content)
+    food_name = detect_food(uploaded_image)
+
+    st.write("Rozpoznano:", food_name)
+
+    context = retrieve_food_context(food_name)
+
+    if context is None:
+        st.error("Nie znaleziono produktu.")
+    else:
+        response = analyze_nutrition(context, model)
+        st.write(response.content)
