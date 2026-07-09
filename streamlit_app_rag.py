@@ -5,6 +5,8 @@ from langchain_core.prompts import ChatPromptTemplate
 import shutil
 from docloader import load_documents_from_folder
 from embedder_rag import create_index, retrieve_docs
+from nutrition_rag import retrieve_food_context
+from food_detector import detect_food
 
 st.set_page_config(layout="wide", page_title="Rag chatbot app")
 st.title("Rag chatbot app")
