@@ -1,4 +1,9 @@
 from langchain_core.prompts import ChatPromptTemplate
+from custom_model_chat import CustomChatModel
+
+model = CustomChatModel(
+    model="gemini-2.5-flash"
+)
 
 template = """
 Jesteś dietetykiem.
