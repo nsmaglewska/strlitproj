@@ -6,7 +6,7 @@ def retrieve_food_context(food_name):
     )
     if product is None:
         return None
-    context = f"""
+    return f"""
 Produkt:
 {product['name']}
 Wartości na 100g:
@@ -23,4 +23,3 @@ Cukry:
 Błonnik:
 {product['fiber']} g
 """
-    return context
