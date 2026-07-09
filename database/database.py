@@ -29,3 +29,20 @@ def search_food(name):
     if row:
         return dict(row)
     return None
+
+def check_database():
+
+    conn = sqlite3.connect(DATABASE)
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table';"
+    )
+
+    print(cursor.fetchall())
+
+    conn.close()
+
+
+check_database()
