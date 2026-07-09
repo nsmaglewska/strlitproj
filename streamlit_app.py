@@ -3,6 +3,8 @@ from openai import OpenAI
 import os
 import fitz
 from food_detector import detect_food
+from nutrition_rag import retrieve_food_context
+from nutrition_analyzer import analyze_nutrition
 
 # a
 
@@ -42,10 +44,8 @@ food_name = detect_food(uploaded_image)
 
 context = retrieve_food_context(food_name)
 
-answer = answer_question(
-    question="Oceń wartości odżywcze tego produktu.",
-    context=context,
-    model=model
-)
-
-st.write(answer.content)
+if context is None:
+    st.error("Nie znaleziono produktu.")
+else:
+    response = analyze_nutrition(context, model)
+    st.write(response.content)
