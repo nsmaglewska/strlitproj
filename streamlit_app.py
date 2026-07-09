@@ -46,14 +46,18 @@ if uploaded_image:
         uploaded_image,
         width=300
     )
-    result = detect_food(uploaded_image)
-    food_name = result["food"]
-    confidence = result["confidence"]
+    if "food_name" not in st.session_state:
+        result = detect_food(
+            uploaded_image
+        )
+        st.session_state.food_name = result["food"]
+        st.session_state.confidence = result["confidence"]
+    food_name = st.session_state.food_name
     st.success(
         f"Rozpoznano: {food_name}"
     )
     st.write(
-        f"Pewność: {confidence:.2f}"
+        f"Pewność: {st.session_state.confidence:.2f}"
     )
     context = retrieve_food_context(
         food_name
